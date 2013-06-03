@@ -8,19 +8,27 @@
  * elements which must be present and not empty.
  *
  * @author     Dotan Cohen
- * @version    2013-05-30
+ * @version    2013-06-03
  *
- * @param Array to be checked
- * @param All elements that must exist and not be empty strings.
+ * @param  array   $consideration  Array to be checked
+ * @param  string  ...             Elements which must exist in array and not be empty strings.
+ *
  * @return bool
  */
 function ensure_fields($consideration)
 {
+	if ( !is_array($consideration) ) {
+		return NULL;
+	}
+
 	$args = func_get_args();
 	$pass = 0;
 	foreach ( $args as $a ) {
 		if ( $pass++ == 0 ) {
 			continue;
+		}
+		if ( !is_string($a) ) {
+			return NULL;
 		}
 		if ( !isset($consideration[$a]) || $consideration[$a]=='' ) {
 			return FALSE;
