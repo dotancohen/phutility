@@ -39,4 +39,29 @@ function ensure_fields($consideration)
 }
 
 
+
+/**
+ * Get the IP address used for external internet-facing applications.
+ *
+ * @author     Dotan Cohen
+ * @version    2013-06-09
+ *
+ * @return string
+ */
+function get_external_ip_address()
+{
+	$url="simplesniff.com/ip";
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+	$data = curl_exec($ch);
+	curl_close($ch);
+
+	return $data;
+}
+
+
+
 ?>
