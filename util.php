@@ -1,5 +1,70 @@
 <?php
 
+
+
+/**
+ * Send email via Amazon SES
+ *
+ * The AWSSDKforPHP library must be installed first!
+ * http://aws.amazon.com/sdkforphp/
+ *
+ * @author     Dotan Cohen
+ * @version    2013-06-12
+ *
+ * @param  string|array $to      The addresss(es) of the intended recipients of the mail
+ * @param  string       $subject The subject of the mail
+ * @param  string       $message The text of the mail
+ * @param  string       $to      The addresss of the sender of the mail
+ * @param  string|array $cc      The addresss(es) to which copies of the mail should be sent
+ * @param  string|array $bcc     The addresss(es) to which copies of the mail should be surreptitiously sent
+ *
+ * @return bool
+ */
+function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
+{
+	require_once('AWSSDKforPHP/sdk.class.php');
+	require_once('AWSSDKforPHP/services/ses.class.php');
+
+	$amazonSes = new AmazonSES();
+	$addresses = array();
+	$message = array();
+
+	if (is_array($to)) {
+		$addresses['ToAddresses'] = $to;
+	} else {
+		$addresses['ToAddresses'] = array($to);
+	}
+
+	if ( $cc!==NULL ) {
+		if (is_array($cc)) {
+			$addresses['CcAddresses'] = $cc;
+		} else {
+			$addresses['CcAddresses'] = array($cc);
+		}
+	}
+
+	if ( $bcc!==NULL ) {
+		if (is_array($bcc)) {
+			$addresses['BccAddresses'] = $bcc;
+		} else {
+			$addresses['BccAddresses'] = array($bcc);
+		}
+	}
+
+	$message = array(
+			'Subject.Charset'   => 'UTF-8',
+			'Body.Text.Charset' => 'UTF-8',
+			'Subject.Data'      => $subject,
+			'Body.Text.Data'    => $message
+			);
+
+	$amazonSes->send_email($from, $addresses, $message);
+
+	return $response->isOK();
+}
+
+
+
 /**
  * Ensure that all necessary array elements are present and not empty.
  *
