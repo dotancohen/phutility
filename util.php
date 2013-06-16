@@ -178,7 +178,12 @@ function get_user_ip_address($force_string=NULL)
 			continue;
 		}
 
-		$ip_addresses[] = $_SERVER['HTTP_CLIENT_IP'];
+		$client_ip = explode(',', $_SERVER['HTTP_CLIENT_IP']);
+		$client_ip = array_map('trim', $client_ip);
+
+		foreach ( $client_ip as $c ) {
+			$ip_addresses[] = $c;
+		}
 
 	}
 
@@ -191,7 +196,12 @@ function get_user_ip_address($force_string=NULL)
 			continue;
 		}
 
-		$ip_addresses[] = $_SERVER['REMOTE_ADDR'];
+		$remote_addr = explode(',', $_SERVER['REMOTE_ADDR']);
+		$remote_addr = array_map('trim', $remote_addr);
+
+		foreach ( $remote_addr as $r ) {
+			$ip_addresses[] = $r;
+		}
 
 	}
 
