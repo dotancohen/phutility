@@ -115,6 +115,8 @@ function ensure_fields($consideration)
  */
 function get_external_ip_address()
 {
+	// TODO: Add a fallback to http://httpbin.org/ip
+
 	$url="simplesniff.com/ip";
 
 	$ch = curl_init();
@@ -125,6 +127,89 @@ function get_external_ip_address()
 	curl_close($ch);
 
 	return $data;
+}
+
+
+
+/**
+ * Get the IP address used for external internet-facing applications.
+ *
+ * @author     Dotan Cohen
+ * @version    2013-06-16
+ *
+ * @param bool $force_string Force the return of a single address as a string, even if more than one address is found
+                             True: Always return a string with a single value
+                             False: Always return an array
+                             Null (empty): Return a string if a single value, array for multiple values
+ *
+ * @return bool|string|array
+ */
+function get_user_ip_address($force_string=NULL)
+{
+	$ip_addresses = array();
+
+
+
+	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+
+		if ( !is_string($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
+			// Log the value somehow, to improve the script!
+			continue;
+		}
+
+		// Sometimes returns comma-delimited list of addresses!
+		$x_forwarded_for = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+		$x_forwarded_for = array_map('trim', $x_forwarded_for);
+
+		// Not using array_merge in order to preserve order (even though this is the fist type checked).
+		// Better solutions welcome!
+		foreach ( $x_forwarded_for as $x ) {
+			$ip_addresses[] = $x;
+		}
+
+	}
+
+
+
+	if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+
+		if ( !is_string($_SERVER['HTTP_CLIENT_IP']) ) {
+			// Log the value somehow, to improve the script!
+			continue;
+		}
+
+		$ip_addresses[] = $_SERVER['HTTP_CLIENT_IP'];
+
+	}
+
+
+
+	if ( isset($_SERVER['REMOTE_ADDR']) ) {
+
+		if ( !is_string($_SERVER['REMOTE_ADDR']) ) {
+			// Log the value somehow, to improve the script!
+			continue;
+		}
+
+		$ip_addresses[] = $_SERVER['REMOTE_ADDR'];
+
+	}
+
+
+
+	if ( count($ip_addresses)==0 ) {
+
+		return FALSE;
+
+	} elseif ( $force_string===TRUE || ( $force_string===NULL && count($ip_addresses)==1 ) ) {
+
+		return $ip_addresses[0];
+
+	} else {
+
+		return $ip_addresses;
+	}
+
 }
 
 
