@@ -292,4 +292,51 @@ function get_user_ip_address($force_string=NULL)
 
 
 
+/**
+ * Return an array containing the quoted and unquote portions of $text
+ *
+ * @author     Dotan Cohen
+ * @version    2013-06-17
+ *
+ * @param string $text             The text to parse
+ * @param bool   $combine_unquoted If TRUE, return string of unquoted text instead of array
+ * @param bool   $combine_quoted   If TRUE, return string of quoted text instead of array
+ *
+ * @return array
+ */
+function separate_quoted_text($text, $combine_unquoted=FALSE, $combine_quoted=FALSE)
+{
+	if ( !is_string($text) || !is_bool($combine_unquoted) || !is_bool($combine_quoted) ) {
+		return NULL;
+	}
+
+	$output = array();
+	$output['quoted'] = array();
+	$output['unquoted'] = array();
+
+	$text_parts = explode('"', $text);
+
+	$quoted = FALSE;
+	foreach ( $text_parts as $tp ) {
+		$output_element = $quoted ? 'quoted' : 'unquoted';
+		$quoted = !$quoted;
+
+		if ( trim($tp)!='' ) {
+			$output[$output_element][] = trim($tp);
+		}
+	}
+
+	if ( $combine_unquoted ) {
+		$output['unquoted'] = implode(' ', $output['unquoted']);
+	}
+
+	if ( $combine_quoted ) {
+		$output['quoted'] = implode(' ', $output['quoted']);
+	}
+
+	return $output;
+}
+
+
+
 ?>
