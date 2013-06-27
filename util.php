@@ -329,7 +329,10 @@ function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=
 		}
 	}
 
-	foreach ( $output['unquoted_preliminary'] ) {
+	foreach ( $output['unquoted_preliminary'] as $up ) {
+
+		// TODO: Fix here, need to explode each $up on ' '
+
 		if ( $up[0]=='+' ) {
 			$output['plus'][] = substr($up, 1);
 		} else if ( $up[0]=='-' ) {
