@@ -293,10 +293,10 @@ function get_user_ip_address($force_string=NULL)
 
 
 /**
- * Return an array containing the quoted and unquote portions of $text
+ * Return an array containing the quoted, unquoted, plussed, and minussed portions of $text
  *
  * @author     Dotan Cohen
- * @version    2013-06-17
+ * @version    2013-06-27
  *
  * @param string $text             The text to parse
  * @param bool   $combine_unquoted If TRUE, return string of unquoted text instead of array
@@ -304,7 +304,7 @@ function get_user_ip_address($force_string=NULL)
  *
  * @return array
  */
-function separate_quoted_text($text, $combine_unquoted=FALSE, $combine_quoted=FALSE)
+function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=FALSE)
 {
 	if ( !is_string($text) || !is_bool($combine_unquoted) || !is_bool($combine_quoted) ) {
 		return NULL;
@@ -313,18 +313,33 @@ function separate_quoted_text($text, $combine_unquoted=FALSE, $combine_quoted=FA
 	$output = array();
 	$output['quoted'] = array();
 	$output['unquoted'] = array();
+	$output['plus'] = array();
+	$output['minus'] = array();
+	$output['unquoted_preliminary'] = array(); // Using subarray in $output to simplify un/quoted separation
 
 	$text_parts = explode('"', $text);
 
 	$quoted = FALSE;
 	foreach ( $text_parts as $tp ) {
-		$output_element = $quoted ? 'quoted' : 'unquoted';
+		$output_element = $quoted ? 'quoted' : 'unquoted_preliminary';
 		$quoted = !$quoted;
 
 		if ( trim($tp)!='' ) {
 			$output[$output_element][] = trim($tp);
 		}
 	}
+
+	foreach ( $output['unquoted_preliminary'] ) {
+		if ( $up[0]=='+' ) {
+			$output['plus'][] = substr($up, 1);
+		} else if ( $up[0]=='-' ) {
+			$output['minus'][] = substr($up, 1);
+		} else {
+			$output['unquoted'] = $up;
+		}
+	}
+
+	unset($output['unquoted_preliminary']);
 
 	if ( $combine_unquoted ) {
 		$output['unquoted'] = implode(' ', $output['unquoted']);
