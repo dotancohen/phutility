@@ -357,4 +357,89 @@ function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=
 
 
 
+/**
+ * Return an associative array containing the headers of an $oauth request
+ *
+ * @author     Dotan Cohen
+ * @version    2013-06-19
+ *
+ * @param OAuth $oauth The OAuth object for which a request has been made
+ *
+ * @return array
+ */
+function oauth_get_headers_array($oauth)
+{
+	if ( !($oauth instanceof OAuth) ) {
+		return NULL;
+	}
+
+	$headers = array();
+	$result_headers = explode("\r\n", $oauth->getLastResponseHeaders());
+
+	foreach ( $result_headers as $rh ) {
+		$pos = stripos($rh, ':');
+		if ( $pos===FALSE ) {
+			$headers[] = $rh;
+		} else {
+			$name  = trim(substr($rh, 0, $pos));
+			$value = trim(substr($rh, $pos));
+			$headers[$name] = $value;
+		}
+	}
+
+	return $headers;
+}
+
+
+
+/**
+ * Return an array containing the typical values of it's elements
+ *
+ * Different instances of an array will typically hold different values for each
+ * of the defined (associative) elements. In order to reverse-engineer the format
+ * of the array, one must have access to many 'typical values' for each element.
+ * Thus, this function takes an array of 'typical arrays' and creates a master array
+ * for which each element of the 'typical arrays' contains an array 'values' which
+ * contain the values of the original arrays.
+ *
+ * @author     Dotan Cohen
+ * @version    ????
+ *
+ * @param array $input An array containing 'typical arrays'.
+ *
+ * @return array
+ */
+function get_typical_results($input)
+{
+	// http://stackoverflow.com/questions/17194649/get-path-and-value-of-all-elements-in-nested-associative-array
+	if ( !is_array($input) ) {
+		return FALSE;
+	}
+
+	$typical_results = new stdClass();
+	$rn = 1; // Result Number
+
+	foreach ( $input as $element ) {
+		if ( !is_array($elementi) ) {
+			continue;
+		}
+
+		$pd = 0 // Path Depth
+		$path = array();
+
+		foreach ( $element as $f1=>$v1 ) {
+			$path[] = 
+
+			$typical_results[$k1][$rn] = $v1;
+		}
+
+
+		$rn += 1;
+	}
+
+	return $typical_results;
+}
+
+
+
 ?>
