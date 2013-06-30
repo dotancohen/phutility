@@ -402,8 +402,11 @@ function oauth_get_headers_array($oauth)
  * for which each element of the 'typical arrays' contains an array 'values' which
  * contain the values of the original arrays.
  *
+ * http://stackoverflow.com/questions/17194649/get-path-and-value-of-all-elements-in-nested-associative-array
+ *
  * @author     Dotan Cohen
- * @version    ????
+ * @author     Jacob S
+ * @version    ???? (Not done yet)
  *
  * @param array $input An array containing 'typical arrays'.
  *
@@ -411,7 +414,6 @@ function oauth_get_headers_array($oauth)
  */
 function get_typical_results($input)
 {
-	// http://stackoverflow.com/questions/17194649/get-path-and-value-of-all-elements-in-nested-associative-array
 	if ( !is_array($input) ) {
 		return FALSE;
 	}
