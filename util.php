@@ -200,10 +200,10 @@ function get_external_ip_address()
 
 
 /**
- * Get the IP address used for external internet-facing applications.
+ * Get the IP address of the client accessing the website
  *
  * @author     Dotan Cohen
- * @version    2013-06-16
+ * @version    2013-07-02
  *
  * @param bool $force_string Force the return of a single address as a string, even if more than one address is found
                              True: Always return a string with a single value
@@ -215,79 +215,34 @@ function get_external_ip_address()
 function get_user_ip_address($force_string=NULL)
 {
 	$ip_addresses = array();
+	$ip_elements = array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR');
 
+	foreach ( $ip_elements as $element ) {
+		if(isset($_SERVER[$element])) {
+			if ( !is_string($_SERVER[$element]) ) {
+				// Log the value somehow, to improve the script!
+				continue;
+			}
 
+			$address_list = explode(',', $_SERVER[$element]);
+			$address_list = array_map('trim', $address_list);
 
-	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-
-		if ( !is_string($_SERVER['HTTP_X_FORWARDED_FOR']) ) {
-			// Log the value somehow, to improve the script!
-			continue;
+			// Not using array_merge in order to preserve order
+			foreach ( $address_list as $x ) {
+				$ip_addresses[] = $x;
+			}
 		}
-
-		// Sometimes returns comma-delimited list of addresses!
-		$x_forwarded_for = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-		$x_forwarded_for = array_map('trim', $x_forwarded_for);
-
-		// Not using array_merge in order to preserve order (even though this is the fist type checked).
-		// Better solutions welcome!
-		foreach ( $x_forwarded_for as $x ) {
-			$ip_addresses[] = $x;
-		}
-
 	}
-
-
-
-	if(isset($_SERVER['HTTP_CLIENT_IP'])) {
-
-		if ( !is_string($_SERVER['HTTP_CLIENT_IP']) ) {
-			// Log the value somehow, to improve the script!
-			continue;
-		}
-
-		$client_ip = explode(',', $_SERVER['HTTP_CLIENT_IP']);
-		$client_ip = array_map('trim', $client_ip);
-
-		foreach ( $client_ip as $c ) {
-			$ip_addresses[] = $c;
-		}
-
-	}
-
-
-
-	if ( isset($_SERVER['REMOTE_ADDR']) ) {
-
-		if ( !is_string($_SERVER['REMOTE_ADDR']) ) {
-			// Log the value somehow, to improve the script!
-			continue;
-		}
-
-		$remote_addr = explode(',', $_SERVER['REMOTE_ADDR']);
-		$remote_addr = array_map('trim', $remote_addr);
-
-		foreach ( $remote_addr as $r ) {
-			$ip_addresses[] = $r;
-		}
-
-	}
-
-
 
 	if ( count($ip_addresses)==0 ) {
-
 		return FALSE;
 
 	} elseif ( $force_string===TRUE || ( $force_string===NULL && count($ip_addresses)==1 ) ) {
-
 		return $ip_addresses[0];
 
 	} else {
-
 		return $ip_addresses;
 	}
-
 }
 
 
