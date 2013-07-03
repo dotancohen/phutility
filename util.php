@@ -248,10 +248,10 @@ function get_user_ip_address($force_string=NULL)
 
 
 /**
- * Return an array containing the quoted, unquoted, plussed, and minussed portions of $text
+ * Return an array containing the quoted, unquoted, plused, and minused portions of $text
  *
  * @author     Dotan Cohen
- * @version    2013-06-27
+ * @version    2013-07-03
  *
  * @param string $text             The text to parse
  * @param bool   $combine_unquoted If TRUE, return string of unquoted text instead of array
@@ -261,6 +261,9 @@ function get_user_ip_address($force_string=NULL)
  */
 function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=FALSE)
 {
+	// TODO: Do not disregard lone +/-
+	// TODO: Handle +/- before quoted text
+
 	if ( !is_string($text) || !is_bool($combine_unquoted) || !is_bool($combine_quoted) ) {
 		return NULL;
 	}
@@ -285,15 +288,29 @@ function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=
 	}
 
 	foreach ( $output['unquoted_preliminary'] as $up ) {
+		$bits = explode(' ', $up);
+		$plus = '';
+		$minus = '';
+		$unquoted = '';
 
-		// TODO: Fix here, need to explode each $up on ' '
+		foreach ( $bits as $bit ) {
+			if ( $bit[0]=='+' ) {
+				$plus .= substr($bit, 1) . ' ';
+			} else if ( $up[0]=='-' ) {
+				$minus .= substr($bit, 1) . ' ';
+			} else {
+				$unquoted .= $bit . ' ';
+			}
+		}
 
-		if ( $up[0]=='+' ) {
-			$output['plus'][] = substr($up, 1);
-		} else if ( $up[0]=='-' ) {
-			$output['minus'][] = substr($up, 1);
-		} else {
-			$output['unquoted'] = $up;
+		if ( $plus!='' ) {
+			$output['plus'][] = substr($plus, 0 ,-1);
+		}
+		if ( $minus!='' ) {
+			$output['minus'][] = substr($minus, 0 ,-1);
+		}
+		if ( $unquoted!='' ) {
+			$output['unquoted'][] = substr($unquoted, 0 ,-1);
 		}
 	}
 
