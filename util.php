@@ -214,6 +214,8 @@ function get_external_ip_address()
  */
 function get_user_ip_address($force_string=NULL)
 {
+	// Consider: http://stackoverflow.com/questions/4581789/how-do-i-get-user-ip-address-in-django
+
 	$ip_addresses = array();
 	$ip_elements = array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR');
 
@@ -253,9 +255,8 @@ function get_user_ip_address($force_string=NULL)
  * @author     Dotan Cohen
  * @version    2013-07-03
  *
- * @param string $text             The text to parse
- * @param bool   $combine_unquoted If TRUE, return string of unquoted text instead of array
- * @param bool   $combine_quoted   If TRUE, return string of quoted text instead of array
+ * @param string $text     The text to parse
+ * @param array  $combine  Array of elements to combine into strings.
  *
  * @return array
  */
