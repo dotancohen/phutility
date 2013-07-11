@@ -400,11 +400,11 @@ function get_typical_results($input)
 			continue;
 		}
 
-		$pd = 0 // Path Depth
+		$pd = 0; // Path Depth
 		$path = array();
 
 		foreach ( $element as $f1=>$v1 ) {
-			$path[] = 
+			//$path[] = 
 
 			$typical_results[$k1][$rn] = $v1;
 		}
