@@ -218,7 +218,13 @@ function get_user_ip_address($force_string=NULL)
 	// Consider: http://networkengineering.stackexchange.com/questions/2283/how-to-to-determine-if-an-address-is-a-public-ip-address
 
 	$ip_addresses = array();
-	$ip_elements = array('HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_CLUSTER_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_CLIENT_IP', 'REMOTE_ADDR');
+	$ip_elements = array(
+		'HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED_FOR',
+		'HTTP_X_FORWARDED', 'HTTP_FORWARDED',
+		'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_CLUSTER_CLIENT_IP',
+		'HTTP_X_CLIENT_IP', 'HTTP_CLIENT_IP',
+		'REMOTE_ADDR'
+	);
 
 	foreach ( $ip_elements as $element ) {
 		if(isset($_SERVER[$element])) {
