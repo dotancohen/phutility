@@ -187,41 +187,6 @@ function separate_operator_text($text, $combine_unquoted=FALSE, $combine_quoted=
 
 
 /**
- * Return an associative array containing the headers of an $oauth request
- *
- * @author     Dotan Cohen
- * @version    2013-06-19
- *
- * @param OAuth $oauth The OAuth object for which a request has been made
- *
- * @return array
- */
-function oauth_get_headers_array($oauth)
-{
-	if ( !($oauth instanceof OAuth) ) {
-		return NULL;
-	}
-
-	$headers = array();
-	$result_headers = explode("\r\n", $oauth->getLastResponseHeaders());
-
-	foreach ( $result_headers as $rh ) {
-		$pos = stripos($rh, ':');
-		if ( $pos===FALSE ) {
-			$headers[] = $rh;
-		} else {
-			$name  = trim(substr($rh, 0, $pos));
-			$value = trim(substr($rh, $pos));
-			$headers[$name] = $value;
-		}
-	}
-
-	return $headers;
-}
-
-
-
-/**
  * Return an array containing the typical values of it's elements
  *
  * Different instances of an array will typically hold different values for each
