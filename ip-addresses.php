@@ -3,16 +3,17 @@
 
 
 /**
- * Get the IP address used for external internet-facing applications.
+ * Get the IP address used for public internet-facing applications.
  *
  * @author     Dotan Cohen
  * @version    2013-06-09
  *
  * @return string
  */
-function get_external_ip_address()
+function get_public_ip_address()
 {
 	// TODO: Add a fallback to http://httpbin.org/ip
+	// TODO: Add a fallback to http://169.254.169.254/latest/meta-data/public-ipv4
 
 	$url="simplesniff.com/ip";
 
