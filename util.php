@@ -27,7 +27,6 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 
 	$amazonSes = new AmazonSES();
 	$addresses = array();
-	$message = array();
 
 	if (is_array($to)) {
 		$addresses['ToAddresses'] = $to;
@@ -51,15 +50,16 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 		}
 	}
 
-	$message = array(
-			'Subject.Charset'   => 'UTF-8',
-			'Body.Text.Charset' => 'UTF-8',
-			'Subject.Data'      => $subject,
-			'Body.Text.Data'    => $message
-			);
+	$message_array = array(
+		'Subject.Charset'   => 'UTF-8',
+		'Body.Text.Charset' => 'UTF-8',
+		'Subject.Data'      => $subject,
+		'Body.Text.Data'    => $message
+	);
 
-	$response = $amazonSes->send_email($from, $addresses, $message);
+	$response = $amazonSes->send_email($from, $addresses, $message_array);
 
+	// TODO: Error handling. See Zim file for error examples.
 	return $response->isOK();
 }
 
