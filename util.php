@@ -58,7 +58,7 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 			'Body.Text.Data'    => $message
 			);
 
-	$amazonSes->send_email($from, $addresses, $message);
+	$response = $amazonSes->send_email($from, $addresses, $message);
 
 	return $response->isOK();
 }
