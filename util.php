@@ -9,7 +9,7 @@
  * http://aws.amazon.com/sdkforphp/
  *
  * @author     Dotan Cohen
- * @version    2013-06-12
+ * @version    2013-08-29
  *
  * @param  string|array $to      The addresss(es) of the intended recipients of the mail
  * @param  string       $subject The subject of the mail
@@ -28,26 +28,14 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 	$amazonSes = new AmazonSES();
 	$addresses = array();
 
-	if (is_array($to)) {
-		$addresses['ToAddresses'] = $to;
-	} else {
-		$addresses['ToAddresses'] = array($to);
-	}
+	$addresses['ToAddresses'] = is_array($to) ? $to : array($to);
 
 	if ( $cc!==NULL ) {
-		if (is_array($cc)) {
-			$addresses['CcAddresses'] = $cc;
-		} else {
-			$addresses['CcAddresses'] = array($cc);
-		}
+		$addresses['CcAddresses'] = is_array($cc) ? $bcc : array($cc);
 	}
 
 	if ( $bcc!==NULL ) {
-		if (is_array($bcc)) {
-			$addresses['BccAddresses'] = $bcc;
-		} else {
-			$addresses['BccAddresses'] = array($bcc);
-		}
+		$addresses['BccAddresses'] = is_array($bcc) ? $bcc : array($bcc);
 	}
 
 	$message_array = array(
