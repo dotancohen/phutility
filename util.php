@@ -87,6 +87,8 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
  *
  * The AWSSDKforPHP library must be installed first!
  * http://aws.amazon.com/sdkforphp/
+ * Your AWS Key and Secret must be retrieved from here:
+ * https://portal.aws.amazon.com/gp/aws/securityCredentials
  *
  * @author     Dotan Cohen
  * @version    2013-11-03
@@ -102,8 +104,8 @@ function getAwsClient($service)
 		case('ses'):
 			//use Aws\Ses\SesClient;
 			$client = Aws\Ses\SesClient::factory(array(
-						'key'    => 'AKIAJIUOCGN64CUW47UA',
-						'secret' => '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',
+						'key'    => '',
+						'secret' => '',
 						'region' => 'us-east-1',
 			));
 		break;
