@@ -1,12 +1,125 @@
 <?php
 
 
+/**
+ * Send email via Amazon SES
+ *
+ * The AWSSDKforPHP library must be installed first!
+ * http://aws.amazon.com/sdkforphp/
+ *
+ * @author     Dotan Cohen
+ * @version    2013-11-03
+ *
+ * @param  string|array $to      The addresss(es) of the intended recipients of the mail
+ * @param  string       $subject The subject of the mail
+ * @param  string|array $message The text of the mail, or an array containing 'text' and 'html' elements.
+ * @param  string       $to      The addresss of the sender of the mail
+ * @param  string|array $cc      The addresss(es) to which copies of the mail should be sent
+ * @param  string|array $bcc     The addresss(es) to which copies of the mail should be surreptitiously sent
+ *
+ * @return bool
+ */
+function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
+{
+	$client = getAwsClient('SES');
+
+	$addresses = array();
+	$addresses['ToAddresses'] = is_array($to) ? $to : array($to);
+
+	if ( $cc!==NULL ) {
+		$addresses['CcAddresses'] = is_array($cc) ? $bcc : array($cc);
+	}
+	if ( $bcc!==NULL ) {
+		$addresses['BccAddresses'] = is_array($bcc) ? $bcc : array($bcc);
+	}
+	if ( !is_array($message) ) {
+		$message = array('text'=>$message);
+	}
+
+	$formatted = array(
+		'Source' => $from,
+		'Destination' => array(
+			'ToAddresses' => array($addresses['ToAddresses']),
+			//'BccAddresses' => array($addresses['BccAddresses']),
+			//'CcAddresses' => array($addresses['CcAddresses']),
+		),
+		'Message' => array(
+			'Subject' => array(
+				'Data' => $Subject,
+				'Charset' => 'UTF-8',
+			),
+			'Body' => array(
+				'Text' => array(
+					'Data' => $message['text'],
+					'Charset' => 'UTF-8',
+				),
+				//'Html' => array(
+					//// Data is required
+					//'Data' => $message['html'],
+					//'Charset' => 'UTF-8',
+				//),
+			),
+		),
+		//'ReplyToAddresses' => array('string', ... ),
+		//'ReturnPath' => 'string',
+	);
+
+	if ( isset($addresses['BccAddresses']) ) {
+		$formatted['Destination']['BccAddresses'] == $addresses['BccAddresses'];
+	}
+	if ( isset($addresses['CcAddresses']) ) {
+		$formatted['Destination']['CcAddresses'] == $addresses['CcAddresses'];
+	}
+	if ( isset($message['html']) ) {
+		$formatted['Message']['Body']['Html'] == $message['html'];
+	}
+
+	$result = $client->sendEmail($formatted);
+
+	// TODO: Error handling
+	return True;
+}
+
+
+
+/**
+ * Return an Amazon AWS client
+ *
+ * The AWSSDKforPHP library must be installed first!
+ * http://aws.amazon.com/sdkforphp/
+ *
+ * @author     Dotan Cohen
+ * @version    2013-11-03
+ *
+ * @return bool
+ */
+function getAwsClient($service)
+{
+	require './vendor/autoload.php';
+	$service = strtolower($service);
+
+	switch($service){
+		case('ses'):
+			//use Aws\Ses\SesClient;
+			$client = Aws\Ses\SesClient::factory(array(
+						'key'    => 'AKIAJIUOCGN64CUW47UA',
+						'secret' => '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',
+						'region' => 'us-east-1',
+			));
+		break;
+	}
+
+	return $client;
+}
+
+
 
 /**
  * Send email via Amazon SES
  *
  * The AWSSDKforPHP library must be installed first!
  * http://aws.amazon.com/sdkforphp/
+ * Note that this function refers to an outdated AWSSDK version.
  *
  * @author     Dotan Cohen
  * @version    2013-08-29
@@ -20,7 +133,7 @@
  *
  * @return bool
  */
-function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
+function send_email_ses_SDK1($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 {
 	require_once('AWSSDKforPHP/sdk.class.php');
 	require_once('AWSSDKforPHP/services/ses.class.php');
