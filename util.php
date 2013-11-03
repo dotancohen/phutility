@@ -39,13 +39,13 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 	$formatted = array(
 		'Source' => $from,
 		'Destination' => array(
-			'ToAddresses' => array($addresses['ToAddresses']),
+			'ToAddresses' => $addresses['ToAddresses'],
 			//'BccAddresses' => array($addresses['BccAddresses']),
 			//'CcAddresses' => array($addresses['CcAddresses']),
 		),
 		'Message' => array(
 			'Subject' => array(
-				'Data' => $Subject,
+				'Data' => $subject,
 				'Charset' => 'UTF-8',
 			),
 			'Body' => array(
