@@ -21,7 +21,9 @@
  */
 function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
 {
-	$client = getAwsClient('SES');
+	// http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.Ses.SesClient.html#_sendEmail
+
+	$client = get_aws_client('SES');
 
 	$addresses = array();
 	$addresses['ToAddresses'] = is_array($to) ? $to : array($to);
@@ -95,8 +97,10 @@ function send_email_ses($to, $subject, $message, $from, $cc=NULL, $bcc=NULL)
  *
  * @return bool
  */
-function getAwsClient($service)
+function get_aws_client($service)
 {
+	// http://docs.aws.amazon.com/aws-sdk-php/guide/latest/quick-start.html#creating-a-client
+
 	require './vendor/autoload.php';
 	$service = strtolower($service);
 
