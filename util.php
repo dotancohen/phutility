@@ -341,4 +341,48 @@ function get_typical_results($input)
 
 
 
+/**
+ * Return an valid US phone number, in digits only without leading '1'
+ *
+ * @author     Dotan Cohen
+ * @version    2013-12-02
+ *
+ * @param string/int $phone A string containing a potential US phone number.
+ *
+ * @return string If valid US phone number found.
+ * @return bool   FALSE if no valid US phone number found.
+ */
+function validate_phone($phone)
+{
+	if ( is_int($phone) ) {
+		$phone = strval($phone);
+	}
+
+	if ( !is_string($phone) ) {
+		return NULL;
+	}
+
+	$phone = preg_replace("/[^0-9]/", "", $phone);
+
+
+	// If the string include the leading '1' then remove it.
+	// This is simplified due to the fact that no US area codes start with '1'
+	if ( substr($phone,0, 1) == '1' ) {
+		$phone = substr($phone, 1);
+	}
+
+	if ( 10 != mb_strlen($phone, 'utf-8') ) {
+		return FALSE;
+	}
+
+	// No US area codes start with '0' or '1'
+	if ( substr($phone, 0, 1)=='0' || substr($phone, 0, 1)=='1' ) {
+		return FALSE;
+	}
+
+	return $phone;
+}
+
+
+
 ?>
