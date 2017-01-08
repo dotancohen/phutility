@@ -35,14 +35,11 @@ function get_public_ip_address()
  * @author     Dotan Cohen
  * @version    2013-07-02
  *
- * @param bool $force_string Force the return of a single address as a string, even if more than one address is found
-                             True: Always return a string with a single value
-                             False: Always return an array
-                             Null (empty): Return a string if a single value, array for multiple values
+ * @param null $return_type 'array', 'single'
  *
- * @return bool|string|array
+ * @return array|bool|mixed
  */
-function get_user_ip_address($force_string=NULL)
+function get_user_ip_address($return_type=NULL)
 {
 	// Consider: http://stackoverflow.com/questions/4581789/how-do-i-get-user-ip-address-in-django
 	// Consider: http://networkengineering.stackexchange.com/questions/2283/how-to-to-determine-if-an-address-is-a-public-ip-address
@@ -56,16 +53,15 @@ function get_user_ip_address($force_string=NULL)
 		'REMOTE_ADDR'
 	);
 
+
 	foreach ( $ip_elements as $element ) {
 		if(isset($_SERVER[$element])) {
 			if ( !is_string($_SERVER[$element]) ) {
 				// Log the value somehow, to improve the script!
 				continue;
 			}
-
 			$address_list = explode(',', $_SERVER[$element]);
 			$address_list = array_map('trim', $address_list);
-
 			// Not using array_merge in order to preserve order
 			foreach ( $address_list as $x ) {
 				$ip_addresses[] = $x;
@@ -73,17 +69,18 @@ function get_user_ip_address($force_string=NULL)
 		}
 	}
 
+
 	if ( count($ip_addresses)==0 ) {
 		return FALSE;
 
-	} elseif ( $force_string===TRUE || ( $force_string===NULL && count($ip_addresses)==1 ) ) {
-		return $ip_addresses[0];
-
-	} else {
+	} elseif ( $return_type==='array' ) {
 		return $ip_addresses;
-	}
-}
 
+	} elseif ( $return_type==='single' || $return_type===NULL ) {
+		return $ip_addresses[0];
+	}
+
+}
 
 
 ?>
