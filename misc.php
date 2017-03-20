@@ -22,3 +22,58 @@ function ensureArray($input)
 	return array($input);
 }
 
+
+
+/**
+ * Return a desired HTTP header
+ *
+ * Accepts pseudo-headers: Protocol and RespCode
+ * Known Issue: If multiple headers share a key, returns only the first
+ *
+ * @author     Dotan Cohen
+ * @version    2017-03-20
+ *
+ * @param $headers array Array of HTTP headers
+ * @param $header string Name of desired HTTP header, or pseudo-header Protocol or RespCode
+ *
+ * @return null|string
+ */
+function getHeader(array $headers, $header)
+{
+	// TODO: Support pseudo-headers ProtocolType ProtocolVersion RespDescription Charset
+
+	$header = trim(strtolower($header));
+
+	foreach ( $headers as $item ) {
+		$parts = explode(':', $item, 2);
+
+		// Support pseudo-headers
+		if ( count($parts) < 2 ) {
+			if ( substr($parts[0],0,4)=='HTTP' ) {
+
+				$parts = explode(' ', $item);
+				if ( 2<=count($parts) ) {
+					switch ($header) {
+						case 'protocol':
+							return $parts[0];
+							break;
+						case 'respcode':
+							return $parts[1];
+							break;
+					}
+				}
+			}
+
+			continue;
+		}
+
+		$key = trim(strtolower($parts[0]));
+		$val = trim($parts[1]);
+
+		if ( $key==$header ) {
+			return $val;
+		}
+	}
+
+	return NULL;
+}
