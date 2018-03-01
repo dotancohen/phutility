@@ -77,3 +77,28 @@ function getHeader(array $headers, $header)
 
 	return NULL;
 }
+
+
+/**
+ * Return the HTTP request parameters normalized
+ *
+ * @author     Dotan Cohen
+ * @version    2017-07-10
+ *
+ * @return array
+ */
+function getRequestNormalized()
+{
+	static $request;
+
+	if ( is_null($request) ) {
+		$request = array();
+		// TODO: Separate _GET _POST _COOKIE and maybe _FILE
+		foreach ( $_REQUEST as $k => $v ) {
+			$request[strtolower($k)] = mb_convert_encoding($v, 'UTF-8', 'UTF-8');
+		}
+	}
+
+	return $request;
+}
+
