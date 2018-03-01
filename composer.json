@@ -1,0 +1,12 @@
+{
+    "name": "dotancohen/phutility",
+    "description": "A collection of PHP utility functions that I use across many websites.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Dotan Cohen",
+            "email": "github-com-2010.04@dotancohen.com"
+        }
+    ],
+    "require": {}
+}
