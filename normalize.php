@@ -6,6 +6,11 @@ namespace Phutility;
 class Normalize {
 
 
+	const FORMAT_DATE = 'Y-m-d';
+	const FORMAT_TIME = 'H:i:s';
+	const FORMAT_DATETIME = 'Y-m-d H:i:s';
+
+
 	/** Return a normalized Israeli phone number
 	 *
 	 * @param string $phone_number Phone number
@@ -62,6 +67,62 @@ class Normalize {
 		}
 
 		return $s;
+	}
+
+
+	/**
+	 * Normalize a Date
+	 *
+	 * @param DateTime|int|string $date
+	 * @return null|string
+	 */
+	public static function normalizeDate($date)
+	{
+		return self::_normalizeFormat($date, self::FORMAT_DATE);
+	}
+
+
+	/**
+	 * Normalize a Time
+	 *
+	 * @param DateTime|int|string $date
+	 * @return null|string
+	 */
+	public static function normalizeTime($date)
+	{
+		return self::_normalizeFormat($date, self::FORMAT_TIME);
+	}
+
+
+	/**
+	 * Normalize a DateTime
+	 *
+	 * @param DateTime|int|string $date
+	 * @return null|string
+	 */
+	public static function normalizeDateTime($date)
+	{
+		return self::_normalizeFormat($date, self::FORMAT_DATETIME);
+	}
+
+
+	/**
+	 * Normalize a DateTime
+	 *
+	 * @param DateTime|int|string $date
+	 * @return null|string
+	 */
+	protected static function _normalizeFormat($date, $format)
+	{
+		if ($date instanceof \DateTime) {
+			return $date->format($format);
+		}
+
+		if ( is_numeric($date) && 99999999<(int)$date ) { // Consider dates in format "Ymd" to not be UNIX timestamps
+			return date($format, $date);
+		}
+
+		return $date ? date($format, strtotime($date)) : null;
 	}
 
 
